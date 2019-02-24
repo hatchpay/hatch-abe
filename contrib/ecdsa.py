@@ -144,12 +144,12 @@ This site is powered by <span style="font-style: italic"> <a href="https://githu
 
     def get_tx(abe, tx_hash ):
         row = abe.store.selectrow("""
-        SELECT tx_id, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size
+        SELECT tx_id, tx_version, tx_lockTime, tx_extra_payload, tx_size
         FROM tx
         WHERE tx_hash = ?
         """, (abe.store.hashin_hex(tx_hash),))
         if row is None: return None, None, None, None, None, None
-        tx_id, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size = (int(row[0]), int(row[1]), int(row[2]), int(row[3]), row[4], int(row[5]))
+        tx_id, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size = (int(row[0]), int(row[1]) & 0xffff, int(row[1]) >> 16, int(row[2]), row[3], int(row[4]))
         return tx_id, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size
     
 

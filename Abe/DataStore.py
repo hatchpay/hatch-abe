@@ -732,8 +732,7 @@ store._ddl['configvar'],
 """CREATE TABLE tx (
     tx_id         NUMERIC(26) NOT NULL PRIMARY KEY,
     tx_hash       BINARY(32)  UNIQUE NOT NULL,
-    tx_version    NUMERIC(5),
-    tx_type       NUMERIC(5),
+    tx_version    NUMERIC(10),
     tx_lockTime   NUMERIC(10),
     tx_extra_payload   VARBINARY(""" + str(MAX_TX_EXTRA_PAYLOAD) + """) NULL,
     tx_size       NUMERIC(10)
@@ -1822,9 +1821,9 @@ store._ddl['txout_approx'],
             tx['size'] = len(tx['__data__'])
 
         store.sql("""
-            INSERT INTO tx (tx_id, tx_hash, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size)
-            VALUES (?, ?, ?, ?, ?, ?, ?)""",
-                  (tx_id, dbhash, store.intin(tx['version']), store.intin(tx['type']),
+            INSERT INTO tx (tx_id, tx_hash, tx_version, tx_lockTime, tx_extra_payload, tx_size)
+            VALUES (?, ?, ?, ?, ?, ?)""",
+                  (tx_id, dbhash, int(tx['version']) | (int(tx['type']) << 16),
                    store.intin(tx['lockTime']), store.binin(tx['extra_payload']), tx['size']))
         # Always consider tx are unlinked until they are added to block_tx.
         # This is necessary as inserted tx can get committed to database
@@ -1949,7 +1948,7 @@ store._ddl['txout_approx'],
 
         if tx_id is not None:
             row = store.selectrow("""
-                SELECT tx_hash, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size
+                SELECT tx_hash, tx_version, tx_lockTime, tx_extra_payload, tx_size
                   FROM tx
                  WHERE tx_id = ?
             """, (tx_id,))
@@ -1959,7 +1958,7 @@ store._ddl['txout_approx'],
 
         elif tx_hash is not None:
             row = store.selectrow("""
-                SELECT tx_id, tx_version, tx_type, tx_lockTime,  tx_extra_payload, tx_size
+                SELECT tx_id, tx_version, tx_lockTime,  tx_extra_payload, tx_size
                   FROM tx
                  WHERE tx_hash = ?
             """, (store.hashin_hex(tx_hash),))
@@ -1971,11 +1970,11 @@ store._ddl['txout_approx'],
         else:
             raise ValueError("export_tx requires either tx_id or tx_hash.")
 
-        tx['version' if is_bin else 'ver']        = int(row[1])
-        tx['type']                                = int(row[2])
-        tx['lockTime' if is_bin else 'lock_time'] = int(row[3])
-        tx['extra_payload']                       = store.binout_hex(row[4])
-        tx['size']                                = int(row[5])
+        tx['version' if is_bin else 'ver']        = int(row[1]) & 0xffff
+        tx['type']                                = int(row[1]) >> 16
+        tx['lockTime' if is_bin else 'lock_time'] = int(row[2])
+        tx['extra_payload']                       = store.binout_hex(row[3])
+        tx['size']                                = int(row[4])
 
         txins = []
         tx['txIn' if is_bin else 'in'] = txins
@@ -2052,7 +2051,7 @@ store._ddl['txout_approx'],
             raise MalformedHash()
 
         row = store.selectrow("""
-            SELECT tx_id, tx_version, tx_type, tx_lockTime, tx_extra_payload, tx_size
+            SELECT tx_id, tx_version, tx_lockTime, tx_extra_payload, tx_size
               FROM tx
              WHERE tx_hash = ?
         """, (dbhash,))
@@ -2062,11 +2061,11 @@ store._ddl['txout_approx'],
         tx_id = int(row[0])
         tx = {
             'hash': tx_hash,
-            'version': int(row[1]),
-            'type': int(row[2]),
-            'lockTime': int(row[3]),
-            'extra_payload': store.binout_hex(row[4]),
-            'size': int(row[5]),
+            'version': int(row[1]) & 0xffff,
+            'type': int(row[1]) >> 16,
+            'lockTime': int(row[2]),
+            'extra_payload': store.binout_hex(row[3]),
+            'size': int(row[4]),
             }
 
         def parse_tx_cc(row):
