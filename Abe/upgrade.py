@@ -1080,6 +1080,9 @@ def cleanup_unlinked_tx(store):
     store.commit()
     store.log.info("Cleaned up %d unlinked transactions", txcount)
 
+def add_tx_extra_payload(store):
+    store.sql("ALTER TABLE tx ADD tx_extra_payload VARBINARY(" + str(DataStore.MAX_TX_EXTRA_PAYLOAD) + ") NULL")
+
 upgrades = [
     ('6',    add_block_value_in),
     ('6.1',  add_block_value_out),
@@ -1182,7 +1185,8 @@ upgrades = [
     ('Abe39',   config_concat_style),    # Fast
     ('Abe40',   add_unlinked_tx),        # Fast
     ('Abe40.1', cleanup_unlinked_tx),    # Hours, could be done offline
-    ('Abe41', None)
+    ('Abe41',   add_tx_extra_payload),   # Fast
+    ('Abe42',   None)
 ]
 
 def upgrade_schema(store):
