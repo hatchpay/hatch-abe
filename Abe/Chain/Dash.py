@@ -21,7 +21,7 @@ class Dash(X11Chain):
         chain.name = 'Dash'
         chain.code3 = 'DASH'
         chain.address_version = '\x4c'
-        chain.script_addr_vers = '\x05'
+        chain.script_addr_vers = '\x10'
         chain.magic = '\xbf\x0c\x6b\xbd'
         X11Chain.__init__(chain, **kwargs)
 
