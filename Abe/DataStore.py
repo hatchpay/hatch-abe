@@ -84,10 +84,12 @@ CHAIN_CONFIG = [
     {"chain":"Bitleu"},
     {"chain":"Maxcoin"},
     {"chain":"Dash"},
+    {"chain":"Hatch"},
     {"chain":"BlackCoin"},
     {"chain":"Unbreakablecoin"},
     {"chain":"Californium"},
     {"chain":"DashTestnet"},
+    {"chain":"HatchTestnet"},
     #{"chain":"",
     # "code3":"", "address_version":"\x", "magic":""},
     ]

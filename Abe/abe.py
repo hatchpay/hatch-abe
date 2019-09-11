@@ -49,7 +49,7 @@ COPYRIGHT_URL = 'https://github.com/bitcoin-abe'
 
 DONATIONS_BTC = '1PWC7PNHL1SgvZaN7xEtygenKjWobWsCuf'
 DONATIONS_NMC = 'NJ3MSELK1cWnqUa6xhF2wUYAnz3RSrWXcK'
-DONATIONS_DASH = 'XvKkW3NJFhTr9hcgbV8EQcGqbCCshDS8vj'
+DONATIONS_HATCH = 'XanRR5ApEQyDgBoVu5THDdhHfcgTUq9V1K'
 
 TIME1970 = time.strptime('1970-01-01','%Y-%m-%d')
 EPOCH1970 = calendar.timegm(TIME1970)
@@ -73,16 +73,16 @@ DEFAULT_TEMPLATE = """
 <div class="row">
 <div class="col-lg-12">
     <h1><a href="%(dotdot)s%(HOMEPAGE)s"><img
-     src="%(dotdot)s%(STATIC_PATH)slogo32.png" alt="Dash logo" /></a>
+     src="%(dotdot)s%(STATIC_PATH)slogo32.png" alt="Hatch logo" /></a>
     </h1>
     %(body)s
     <p><a href="%(dotdot)sq">API</a> (machine-readable pages)</p>
     <p style="font-size: smaller">
         <span style="font-style: italic">
-            Dash Explorer powered by <a href="%(ABE_URL)s">%(APPNAME)s</a>.
+            Hatch Explorer powered by <a href="%(ABE_URL)s">%(APPNAME)s</a>.
         </span>
         %(download)s
-        <a href="%(dotdot)saddress/%(DONATIONS_DASH)s">Donate</a> some coins, if you like it.
+        <a href="%(dotdot)saddress/%(DONATIONS_HATCH)s">Donate</a> some coins, if you like it.
     </p>
 </div>
 </div>
@@ -2055,7 +2055,7 @@ def create_conf():
             "COPYRIGHT_URL": COPYRIGHT_URL,
             "DONATIONS_BTC": DONATIONS_BTC,
             "DONATIONS_NMC": DONATIONS_NMC,
-            "DONATIONS_DASH": DONATIONS_DASH,
+            "DONATIONS_HATCH": DONATIONS_HATCH,
             "CONTENT_TYPE": DEFAULT_CONTENT_TYPE,
             "HOMEPAGE": DEFAULT_HOMEPAGE,
             },

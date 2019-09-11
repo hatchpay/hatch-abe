@@ -14,14 +14,17 @@
 # License along with this program.  If not, see
 # <http://www.gnu.org/licenses/agpl.html>.
 
-from . import BaseChain
+from .X11Chain import X11Chain
 
-class X11Chain(BaseChain):
-    """
-    A blockchain that hashes block headers using the X11 algorithm.
-    The current implementation requires the hatch_hash module.
-    """
+class Hatch(X11Chain):
+    def __init__(chain, **kwargs):
+        chain.name = 'Hatch'
+        chain.code3 = 'HATCH'
+        chain.address_version = '\x4c'
+        chain.script_addr_vers = '\x10'
+        chain.magic = '\x6d\x8a\xbc\x2f'
+        X11Chain.__init__(chain, **kwargs)
 
-    def block_header_hash(chain, header):
-        import hatch_hash
-        return hatch_hash.getPoWHash(header)
+    datadir_conf_file_name = 'hatch.conf'
+    datadir_rpcport = 8884
+    datadir_p2pport = 8888
